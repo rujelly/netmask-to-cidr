@@ -1,85 +1,5 @@
 import sys
 import csv
-from os import listdir
-
-'''def parseFile(filename):
-	"""
-	Parse chunk of VLAN file for device data
-	Args:
-		File to be parsed
-	Returns:
-		2D list of VLAN data (each item = list of a single VLAN's data)
-	"""
-
-	device = []
-	vlanFile = open(filename)
-
-	# group file lines according to VLAN, and parse each VLAN
-	vlanList = vlanFile.read().split('!')
-	for sublist in vlanList:
-		sublist = sublist.split('\n')
-		device.append(parseVlan(sublist))
-
-	return device'''
-
-'''def parseVlan(sublist):
-	"""
-	Args:
-		List of data for a single VLAN
-	Returns:
-		Dict of VLAN data
-	"""
-	vlan = dict(
-		NAME 			= 0,
-		DESCRIPTION 	= 0,
-		IP_SUBNET_COMBOS = []
-	)
-
-	for line in sublist:
-		if 'Vlan' in line:					# get VLAN name
-			line = line.split(" ")
-			name = line[1].strip()
-			vlan['NAME'] = name[4:]
-			print("VLAN found:\t" + vlan['NAME'])
-		elif 'description' in line:			# get VLAN description
-			line = line.split(" ")
-			if 'name' not in line:
-				vlan['DESCRIPTION'] = line[2].strip()
-			else:
-				vlan['DESCRIPTION'] = line[3].strip()
-		elif '.' in line:					# get ip address, subnet, and description
-			line = line.split(" ")
-			print(line)
-			try:							# strip items if there are any
-				line[3] = line[3].strip()
-				line[4] = line[4].strip()
-				line[5] = line[5].strip()
-			except:
-				pass
-			vlan['IP_SUBNET_COMBOS'].append(' '.join(line[3:5]))
-
-	return vlan'''
-
-'''def writeVLANToCSV(writer, vlan, filename):
-	"""
-	Args:
-		List of data for a single device
-		Dict of VLAN data to be written to CSV
-		String of device name to write to CSV
-	"""
-	deviceName = filename[28:-4]
-
-	# split ip and subnet and write one row per ip/subnet combo
-	for each in vlan['IP_SUBNET_COMBOS']:
-		each = each.split(" ")
-		if(len(each) > 1): # if there's a subnet, convert IP to CIDR
-			try:
-				each[0] += getCIDR(each[0], each[1])
-			except:
-				pass
-		temp = [deviceName, vlan['DESCRIPTION'], vlan['NAME']]
-		temp.extend(each) # "each" is separate in case there is no subnet
-		writer.writerow(temp)'''
 
 def getCidr(ip, subnet):
 	"""
@@ -145,21 +65,8 @@ def main():
 		if('255' in row[1]):
 		    subnet = row[0] + getCidr(row[0], row[1])
 		else:
-			subnet = row[0] + row[1]
+			subnet = row[0] + '/' + row[1]
 		writer.writerow([subnet, row[2]])
-
-	'''# parse each file for vlan data and write to CSV
-	for filename in filenames:
-		print('Parsing \'' + filename + '\'')
-		filename = PATH + '/' + filename
-		device = parseFile(filename)
-		for vlan in device:
-			if vlan['NAME'] == 0 or vlan['DESCRIPTION'] == 0:	# some empty vlans will be in list
-				pass											# don't write them to CSV
-			else:
-				writeVLANToCSV(writer, vlan, filename)
-	print('CSV saved.')'''
-
 
 if __name__ == '__main__':
 	main()
