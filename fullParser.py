@@ -1,4 +1,4 @@
-# vlanParser.py v2
+# DNS-to-Splunk-lookup
 
 def getCidrForSubnet(subnet_mask):
     masks = [
@@ -43,3 +43,10 @@ def getCidrForSubnet(subnet_mask):
 
     index = subnet_masks.index(subnet)
     return cidrs[index]
+
+def main():
+    # pull csv from DNS
+    # get IP, subnet mask, and dept code rows
+    # convert IP/subnet to CIDR notation
+    # write CIDR IP, dept code, and upload date to Windows CSV (due to newline bug)
+    # upload lookup to Splunk
