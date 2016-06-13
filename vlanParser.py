@@ -67,10 +67,9 @@ def deleteAndsFrom(dept_code):
     dept_code = dept_code.replace(' and', ',')
     return dept_code
 
-def writeCondensedInfobloxRowWith(ip_address, subnet_mask, dept_code, comment, outfile_writer):
+def writeRowWith(ip_address, subnet_mask, dept_code, comment, outfile_writer):
     cidr = getCidrForSubnet(subnet_mask)
     ip_with_cidr = ip_address + cidr
-    dept_code = deleteAndsFrom(dept_code)
     outfile_writer.writerow([ip_with_cidr, dept_code, comment])
 
 def main():
@@ -90,12 +89,15 @@ def main():
     for row in infile_reader:
         if 'header' in row[network_column_index]:
             pass
+        elif 'ipv6' in row[network_column_index]:
+            pass
         else:
             ip_address = row[ip_column_index]
             subnet_mask = row[subnet_column_index]
             comment = row[comment_column_index]
             dept_code = row[dept_code_column_index]
-            writeCondensedInfobloxRowWith(ip_address, subnet_mask, dept_code, comment, outfile_writer)
+            dept_code = deleteAndsFrom(dept_code)
+            writeRowWith(ip_address, subnet_mask, dept_code, comment, outfile_writer)
 
 if __name__ == '__main__':
     main()
