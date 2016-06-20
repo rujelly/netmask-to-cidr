@@ -67,16 +67,16 @@ def deleteAndsFrom(dept_code):
     dept_code = dept_code.replace(' and', ',')
     return dept_code
 
-def writeRowWith(ip_address, subnet_mask, dept_code, comment, outfile_writer):
+def writeRowWith(ip_address, subnet_mask, dept_code, comment, vlan, vrf, outfile_writer):
     cidr = getCidrForSubnet(subnet_mask)
     ip_with_cidr = ip_address + cidr
-    outfile_writer.writerow([ip_with_cidr, dept_code, comment])
+    outfile_writer.writerow([ip_with_cidr, dept_code, comment, vlan, vrf])
 
 def main():
     infile_path = '/Users/greatscott/Downloads/Allnetworks.csv'
     outfile_path = '/Users/greatscott/Downloads/vlan_andrew.csv'
 
-    outfile_writer = createCsvWithHeaders(outfile_path, ['subnet','dept_code','comments','upload_date'])
+    outfile_writer = createCsvWithHeaders(outfile_path, ['subnet','dept_code','comments','VLAN','VRF','upload_date'])
     infile = open(infile_path, 'rU')
     infile_reader = csv.reader(infile)
 
@@ -85,6 +85,8 @@ def main():
     subnet_column_index = 2
     comment_column_index = 8
     dept_code_column_index = 46
+    vlan_column_index = 57
+    vrf_column_index = 58
 
     for row in infile_reader:
         if 'header' in row[network_column_index]:
@@ -97,7 +99,15 @@ def main():
             comment = row[comment_column_index]
             dept_code = row[dept_code_column_index]
             dept_code = deleteAndsFrom(dept_code)
-            writeRowWith(ip_address, subnet_mask, dept_code, comment, outfile_writer)
+            try:
+                vlan = row[vlan_column_index]
+            except:
+                pass
+            try:
+                vrf = row[vrf_column_index]
+            except:
+                pass
+            writeRowWith(ip_address, subnet_mask, dept_code, comment, vlan, vrf, outfile_writer)
 
 if __name__ == '__main__':
     main()
